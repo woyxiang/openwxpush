@@ -2,10 +2,13 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"os/exec"
-	"strings"
 	"github.com/eatmoreapple/openwechat"
+	"github.com/joho/godotenv"
+	"io"
+	"os"
+	"os/exec"
+	"sort"
+	"strings"
 )
 
 func main() {
@@ -14,17 +17,30 @@ func main() {
 	// 创建热存储容器对象
 	reloadStorage := openwechat.NewFileHotReloadStorage("./storage.json")
 
-	defer reloadStorage.Close()
+	defer func(reloadStorage io.ReadWriteCloser) {
+		err := reloadStorage.Close()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}(reloadStorage)
 
 	// 登录
 	if err := bot.HotLogin(reloadStorage); err != nil {
 		fmt.Println("热登陆失败，尝试免扫码登录")
-		bot.PushLogin(reloadStorage, openwechat.NewRetryLoginOption())
+		err := bot.PushLogin(reloadStorage, openwechat.NewRetryLoginOption())
+		if err != nil {
+			return
+		}
 	}
 
 	fmt.Println("登陆成功")
 	defaultPriority := "5"
-
+	// 加载 .env 文件
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("Error loading .env file")
+		os.Exit(1)
+	}
 	bot.MessageHandler = func(msg *openwechat.Message) {
 		if msg.IsSendBySelf() { //自己发送的消息
 			//跳过
@@ -62,20 +78,24 @@ func main() {
 			}
 		} else { //群聊发送的消息
 			groupSender, err := msg.SenderInGroup()
+			group, err := msg.Receiver()
+			groupName := group.NickName
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
-			if msg.IsText() {
-				if strings.Contains(msg.Content, "@所有人") || strings.Comtaions()
+			groupNamesToReceive := strings.Split(os.Getenv("GROUP_NAME"), ";")
+			//只接收指定群组和@所有人的消息
+			if contains(groupName, groupNamesToReceive) || strings.Contains(msg.Content, "@所有人") {
 				fmt.Println(groupSender.NickName, ":", msg.Content)
 				fmt.Println(push(groupSender.NickName, defaultPriority, msg.Content))
-
 			}
+
 		}
 	}
 
 	bot.Block()
+
 }
 
 func push(pushTitle string, pushPriority string, pushMessage string) string {
@@ -83,7 +103,15 @@ func push(pushTitle string, pushPriority string, pushMessage string) string {
 	gotify := exec.Command("gotify", "push", "-t", pushTitle, "-p", pushPriority, pushMessage)
 	output, err := gotify.CombinedOutput()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 	return string(output)
+}
+func contains(item string, slice []string) bool {
+	// 确保切片是有序的
+	sort.Strings(slice)
+
+	// 使用 SearchStrings 查找元素
+	i := sort.SearchStrings(slice, item)
+	return i < len(slice) && slice[i] == item
 }
