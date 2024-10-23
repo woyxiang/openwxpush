@@ -78,14 +78,18 @@ func main() {
 			}
 		} else { //群聊发送的消息
 			var group *openwechat.User
-			if msg.IsSendBySelf() {
-				group, err := msg.Receiver()
-			} else {
-				group, err := msg.Sender()
+			var err error
+			if msg.IsSendByGroup() {
+				if msg.IsSendBySelf() {
+					group, err = msg.Receiver()
+				} else {
+					group, err = msg.Sender()
+				}
 			}
+			groupName := group.NickName
+
 			groupSender, err := msg.SenderInGroup()
 
-			groupName := group.NickName
 			fmt.Println(groupName)
 			if err != nil {
 				fmt.Println(err)
