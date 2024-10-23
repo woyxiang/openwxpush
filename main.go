@@ -77,15 +77,21 @@ func main() {
 				fmt.Println(push(friendSenderName, defaultPriority, msg.Content))
 			}
 		} else { //群聊发送的消息
+			var group *openwechat.User
+			if msg.IsSendBySelf() {
+				group, err := msg.Receiver()
+			} else {
+				group, err := msg.Sender()
+			}
 			groupSender, err := msg.SenderInGroup()
-			group, err := msg.Receiver()
+
 			groupName := group.NickName
+			fmt.Println(groupName)
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
 			groupNamesToReceive := strings.Split(os.Getenv("GROUP_NAME"), ";")
-			fmt.Println(groupNamesToReceive)
 			//只接收指定群组和@所有人的消息
 			if contains(groupName, groupNamesToReceive) || strings.Contains(msg.Content, "@所有人") {
 				fmt.Println(groupSender.NickName, ":", msg.Content)
