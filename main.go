@@ -94,7 +94,7 @@ func main() {
 		}
 	}
 
-	bot.Block()
+	_ = bot.Block()
 
 }
 
