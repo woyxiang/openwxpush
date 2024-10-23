@@ -13,7 +13,7 @@ import (
 
 func main() {
 	bot := openwechat.DefaultBot(openwechat.Desktop) // 桌面模式
-
+	bot.SyncCheckCallback = nil                      //关闭心跳检测
 	// 创建热存储容器对象
 	reloadStorage := openwechat.NewFileHotReloadStorage("./storage.json")
 
