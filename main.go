@@ -85,6 +85,7 @@ func main() {
 				return
 			}
 			groupNamesToReceive := strings.Split(os.Getenv("GROUP_NAME"), ";")
+			fmt.Println(groupNamesToReceive)
 			//只接收指定群组和@所有人的消息
 			if contains(groupName, groupNamesToReceive) || strings.Contains(msg.Content, "@所有人") {
 				fmt.Println(groupSender.NickName, ":", msg.Content)
