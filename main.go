@@ -75,7 +75,7 @@ func main() {
 				fmt.Println(friendSenderName, ":", "[动画表情]")
 				fmt.Println(push(friendSenderName, defaultPriority, "[动画表情]"))
 			} else {
-				fmt.Println(friendSenderName, ":", msg.Content)
+				fmt.Println(friendSenderName, ":", "[其它消息]")
 				fmt.Println(push(friendSenderName, defaultPriority, msg.Content))
 			}
 		} else { //群聊发送的消息
@@ -102,8 +102,25 @@ func main() {
 			groupNamesToReceive := strings.Split(os.Getenv("GROUP_NAME"), ";")
 			//只接收指定群组和@所有人的消息
 			if contains(groupName, groupNamesToReceive) || strings.Contains(msg.Content, "@所有人") {
-				fmt.Println(groupSender.NickName, ":", msg.Content)
-				fmt.Println(push(groupSender.NickName, defaultPriority, msg.Content))
+				if msg.IsText() {
+					fmt.Println(groupSender.NickName, ":", msg.Content)
+					fmt.Println(push(groupSender.NickName, defaultPriority, msg.Content))
+				} else if msg.IsPicture() {
+					fmt.Println(groupSender.NickName, ":", "[图片]")
+					fmt.Println(push(groupSender.NickName, defaultPriority, "[图片]"))
+				} else if msg.IsVoice() {
+					fmt.Println(groupSender.NickName, ":", "[语音]")
+					fmt.Println(push(groupSender.NickName, defaultPriority, "[语音]"))
+				} else if msg.IsVideo() {
+					fmt.Println(groupSender.NickName, ":", "[视频]")
+					fmt.Println(push(groupSender.NickName, defaultPriority, "[视频]"))
+				} else if msg.IsEmoticon() {
+					fmt.Println(groupSender.NickName, ":", "[动画表情]")
+					fmt.Println(push(groupSender.NickName, defaultPriority, "[动画表情]"))
+				} else {
+					fmt.Println(groupSender.NickName, ":", "[其它消息]")
+					fmt.Println(push(groupSender.NickName, defaultPriority, msg.Content))
+				}
 			}
 
 		}
