@@ -1,4 +1,4 @@
-# WeChatPush
+# openwxpush
 
 > 感谢[eatmoreapple/openwechat](https://github.com/eatmoreapple/openwechat)提供的API  
 
