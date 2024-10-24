@@ -86,11 +86,13 @@ func main() {
 					group, err = msg.Sender()
 				}
 			}
-			groupName := group.NickName
+			var groupName string
+			if group != nil && group.NickName != "" {
+				groupName = group.NickName
+			}
 
 			groupSender, err := msg.SenderInGroup()
 
-			fmt.Println(groupName)
 			if err != nil {
 				fmt.Println(err)
 				return
