@@ -131,6 +131,9 @@ func main() {
 }
 
 func push(pushTitle string, pushPriority string, pushMessage string) string {
+	if pushPriority == "" {
+		pushPriority = "5"
+	}
 
 	gotify := exec.Command("gotify", "push", "-t", pushTitle, "-p", pushPriority, pushMessage)
 	output, err := gotify.CombinedOutput()
