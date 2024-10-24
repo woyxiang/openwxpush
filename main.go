@@ -76,7 +76,7 @@ func main() {
 				fmt.Println(push(friendSenderName, defaultPriority, "[动画表情]"))
 			} else {
 				fmt.Println(friendSenderName, ":", "[其它消息]")
-				fmt.Println(push(friendSenderName, defaultPriority, msg.Content))
+				fmt.Println(push(friendSenderName, defaultPriority, "[其它消息]"))
 			}
 		} else { //群聊发送的消息
 			var group *openwechat.User
@@ -119,7 +119,7 @@ func main() {
 					fmt.Println(push(groupSender.NickName, defaultPriority, "[动画表情]"))
 				} else {
 					fmt.Println(groupSender.NickName, ":", "[其它消息]")
-					fmt.Println(push(groupSender.NickName, defaultPriority, msg.Content))
+					fmt.Println(push(groupSender.NickName, defaultPriority, "[其它消息]"))
 				}
 			}
 
