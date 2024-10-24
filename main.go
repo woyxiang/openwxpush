@@ -17,6 +17,8 @@ func main() {
 	// 创建热存储容器对象
 	reloadStorage := openwechat.NewFileHotReloadStorage("./storage.json")
 
+	defer push("程序结束", "1", "程序结束") // 确保无论程序如何结束，都推送一条消息
+
 	defer func(reloadStorage io.ReadWriteCloser) {
 		err := reloadStorage.Close()
 		if err != nil {
