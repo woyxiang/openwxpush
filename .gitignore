@@ -1,3 +1,4 @@
 storage.json
 .env
 *.json
+.idea/
